@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JEPE203'X - HTML Version</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0a0f; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; min-height: 100vh; }
+        .navbar { background: linear-gradient(90deg, #0f0f1f, #1a1a2e) !important; border-bottom: 3px solid #ff3366; }
+        .navbar-brand { color: #ff3366 !important; font-weight: 900; font-size: 28px; }
+        .navbar-brand span { color: #fff; }
+        .hero { background: radial-gradient(circle at 30% 50%, #1a1a2e, #0a0a0f); padding: 60px 0; text-align: center; border-bottom: 2px solid #ff3366; }
+        .hero h1 { color: #ff3366; font-weight: 900; text-shadow: 0 0 30px rgba(255,51,102,0.3); }
+        .hero h1 span { color: #fff; }
+        .card-dark { background: linear-gradient(145deg, #1a1a2e, #111122); border: 1px solid #333; border-radius: 20px; padding: 25px; box-shadow: 0 0 40px rgba(255,51,102,0.05); }
+        .btn-pink { background: linear-gradient(135deg, #ff3366, #ff0066); color: #fff; font-weight: bold; border: none; border-radius: 12px; padding: 10px 25px; transition: 0.3s; }
+        .btn-pink:hover { background: linear-gradient(135deg, #ff0066, #cc0033); color: #fff; transform: scale(1.05); }
+        .form-control { background: #1f1f2f; border: 1px solid #333; color: #fff; border-radius: 12px; }
+        .form-control:focus { background: #2a2a3e; border-color: #ff3366; box-shadow: 0 0 20px rgba(255,51,102,0.1); }
+        .game-card { background: #1a1a2e; border-radius: 15px; padding: 15px; margin: 10px 0; transition: 0.3s; border: 1px solid #333; cursor: pointer; }
+        .game-card:hover { transform: translateY(-5px); border-color: #ff3366; box-shadow: 0 0 30px rgba(255,51,102,0.1); }
+        .game-card img { width: 100%; border-radius: 10px; }
+        .text-pink { color: #ff3366; }
+        .saldo-box { background: linear-gradient(135deg, #1a1a2e, #2a1a3e); border: 2px solid #ff3366; border-radius: 20px; padding: 20px; }
+        .saldo-box h2 { color: #ff3366; font-weight: 900; }
+        .page { display: none; }
+        .page.active { display: block; }
+        .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; }
+    </style>
+</head>
+<body>
+
+<!-- ===== TOAST NOTIFICATION ===== -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="#" onclick="navigate('home')">🔥 JEPE<span>203'X</span></a>
+        <div class="ms-auto" id="navButtons">
+            <a href="#" onclick="navigate('login')" class="btn btn-outline-light btn-sm me-2">🔐 Login</a>
+            <a href="#" onclick="navigate('register')" class="btn btn-pink btn-sm">📝 Daftar</a>
+        </div>
+    </div>
+</nav>
+
+<!-- ===== CONTENT ===== -->
+<div class="container mt-4">
+
+    <!-- ========== HOME ========== -->
+    <div id="page-home" class="page active">
+        <div class="hero">
+            <h1>🔥 JEPE<span>203'X</span></h1>
+            <p class="text-muted">💎 Situs Slot Gacor • RTP 98.7% • Bonus 200%</p>
+            <div id="homeButtons">
+                <a href="#" onclick="navigate('register')" class="btn btn-pink btn-lg">🚀 DAFTAR</a>
+                <a href="#" onclick="navigate('login')" class="btn btn-outline-light btn-lg ms-2">🔑 LOGIN</a>
+            </div>
+        </div>
+
+        <h4 class="text-pink text-center my-4">🎰 GAME POPULER</h4>
+        <div class="row" id="gameList"></div>
+
+        <div class="card-dark mt-4 d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="text-pink">💰 DEPOSIT VIA BANK & E-WALLET</h5>
+                <p class="m-0 text-muted">BCA, BNI, BRI, MANDIRI • OVO, DANA, GOPAY</p>
+            </div>
+            <div id="depositBtnHome">
+                <a href="#" onclick="navigate('deposit')" class="btn btn-pink">💳 Deposit</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== LOGIN ========== -->
+    <div id="page-login" class="page">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <div class="card-dark">
+                    <h3 class="text-pink text-center">🔥 JEPE<span style="color:#fff;">203'X</span></h3>
+                    <h5 class="text-center text-muted">🔐 Login</h5>
+                    <div id="loginError" class="alert alert-danger" style="display:none;"></div>
+                    <form onsubmit="handleLogin(event)">
+                        <div class="mb-3">
+                            <label>👤 Username</label>
+                            <input type="text" id="loginUsername" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>🔑 Password</label>
+                            <input type="password" id="loginPassword" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-pink w-100">🚀 Login</button>
+                        <p class="mt-3 text-center">Belum punya akun? <a href="#" onclick="navigate('register')" class="text-pink">Daftar</a></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== REGISTER ========== -->
+    <div id="page-register" class="page">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <div class="card-dark">
+                    <h3 class="text-pink text-center">🔥 JEPE<span style="color:#fff;">203'X</span></h3>
+                    <h5 class="text-center text-muted">📝 Daftar</h5>
+                    <div id="registerSuccess" class="alert alert-success" style="display:none;"></div>
+                    <div id="registerError" class="alert alert-danger" style="display:none;"></div>
+                    <form onsubmit="handleRegister(event)">
+                        <div class="mb-3">
+                            <label>👤 Username</label>
+                            <input type="text" id="regUsername" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>📧 Email</label>
+                            <input type="email" id="regEmail" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>🔑 Password</label>
+                            <input type="password" id="regPassword" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-pink w-100">🎯 Daftar</button>
+                        <p class="mt-3 text-center">Sudah punya akun? <a href="#" onclick="navigate('login')" class="text-pink">Login</a></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== DASHBOARD ========== -->
+    <div id="page-dashboard" class="page">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="saldo-box">
+                    <h4>💰 Saldo</h4>
+                    <h2 id="dashSaldo">Rp 0</h2>
+                    <a href="#" onclick="navigate('deposit')" class="btn btn-pink w-100 mt-2">💳 Deposit</a>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <h4 class="text-pink">🎮 Riwayat Spin</h4>
+                <div class="card-dark" id="historyList">
+                    <p class="text-muted">Belum ada riwayat, bro. Gas spin!</p>
+                </div>
+                <a href="#" onclick="navigate('home')" class="btn btn-outline-light mt-3 w-100">⬅ Kembali ke Home</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== DEPOSIT ========== -->
+    <div id="page-deposit" class="page">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="card-dark">
+                    <h3 class="text-pink text-center">💰 DEPOSIT</h3>
+                    <div id="depositMsg" class="alert alert-success" style="display:none;"></div>
+                    <form onsubmit="handleDeposit(event)">
+                        <div class="mb-3">
+                            <label>💰 Jumlah (Rp)</label>
+                            <input type="number" id="depositAmount" class="form-control" required min="10000" placeholder="Min 10.000">
+                        </div>
+                        <div class="mb-3">
+                            <label>📌 Metode</label>
+                            <select id="depositMethod" class="form-control">
+                                <option>BCA</option><option>BNI</option><option>BRI</option>
+                                <option>MANDIRI</option><option>OVO</option><option>DANA</option><option>GOPAY</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-pink w-100">💳 Deposit</button>
+                        <a href="#" onclick="navigate('dashboard')" class="btn btn-secondary w-100 mt-2">⬅ Kembali</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== PLAY GAME ========== -->
+    <div id="page-play" class="page">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="card-dark text-center">
+                    <h3 class="text-pink" id="playGameName">🎰 Game</h3>
+                    <p class="text-muted">⚡ RTP Tinggi • Maxwin 8x</p>
+                    <div id="spinResult" class="alert alert-success" style="display:none;"></div>
+                    <div id="spinError" class="alert alert-danger" style="display:none;"></div>
+                    <form onsubmit="handleSpin(event)">
+                        <input type="hidden" id="spinGameName">
+                        <div class="mb-3">
+                            <label>💰 Taruhan (Rp)</label>
+                            <input type="number" id="spinBet" class="form-control" required min="1000" placeholder="Min 1.000">
+                        </div>
+                        <button type="submit" class="btn btn-pink w-100">🎲 SPIN!</button>
+                        <a href="#" onclick="navigate('dashboard')" class="btn btn-secondary w-100 mt-2">⬅ Kembali</a>
+                    </form>
+                    <div class="mt-3 text-muted" id="playSaldo">Saldo: Rp 0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="text-center mt-5 py-3" style="border-top: 2px solid #ff3366;">
+    <p class="m-0 text-pink">🔥 JEPE203'X © 2026 - HTML Version (No Server)</p>
+    <small class="text-muted">⚡ Dibuat oleh NeoGPT untuk GitHub Pages | alfatih override</small>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// ============================================================
+// JEPE203'X - FULL JAVASCRIPT VERSION (LocalStorage)
+// ============================================================
+
+// --- DATABASE (LocalStorage) ---
+const DB = {
+    getUsers() {
+        return JSON.parse(localStorage.getItem('jepe_users')) || [];
+    },
+    setUsers(users) {
+        localStorage.setItem('jepe_users', JSON.stringify(users));
+    },
+    getGames() {
+        return JSON.parse(localStorage.getItem('jepe_games')) || [
+            { id: 1, name: 'Mahjong Ways 2', provider: 'PG Soft', thumbnail: 'https://via.placeholder.com/200x150/FF3366/fff?text=Mahjong', is_active: true },
+            { id: 2, name: 'Starlight Princess', provider: 'Pragmatic', thumbnail: 'https://via.placeholder.com/200x150/FF69B4/fff?text=Starlight', is_active: true },
+            { id: 3, name: 'Sweet Bonanza', provider: 'Pragmatic', thumbnail: 'https://via.placeholder.com/200x150/FF4500/fff?text=Sweet', is_active: true },
+            { id: 4, name: 'Gates of Olympus', provider: 'Pragmatic', thumbnail: 'https://via.placeholder.com/200x150/FFD700/fff?text=Olympus', is_active: true }
+        ];
+    },
+    setGames(games) {
+        localStorage.setItem('jepe_games', JSON.stringify(games));
+    },
+    getTransactions() {
+        return JSON.parse(localStorage.getItem('jepe_transactions')) || [];
+    },
+    setTransactions(trx) {
+        localStorage.setItem('jepe_transactions', JSON.stringify(trx));
+    },
+    getCurrentUser() {
+        const data = JSON.parse(localStorage.getItem('jepe_session')) || null;
+        return data;
+    },
+    setCurrentUser(user) {
+        localStorage.setItem('jepe_session', JSON.stringify(user));
+    },
+    clearSession() {
+        localStorage.removeItem('jepe_session');
+    }
+};
+
+// --- SESSION ---
+let currentUser = DB.getCurrentUser();
+let games = DB.getGames();
+
+// --- INIT GAMES ---
+if(DB.getGames().length === 0) {
+    DB.setGames(games);
+}
+
+// --- NAVIGATION ---
+function navigate(page, param) {
+    // Hide all pages
+    document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+    
+    // Show target page
+    const target = document.getElementById('page-' + page);
+    if(target) target.classList.add('active');
+    
+    // Update nav buttons
+    const nav = document.getElementById('navButtons');
+    const homeBtn = document.getElementById('homeButtons');
+    const depBtn = document.getElementById('depositBtnHome');
+    
+    if(currentUser) {
+        nav.innerHTML = `
+            <span class="text-white me-3">👋 ${currentUser.username}</span>
+            <a href="#" onclick="handleLogout()" class="btn btn-danger btn-sm">🚪 Logout</a>
+        `;
+        if(homeBtn) homeBtn.innerHTML = `<a href="#" onclick="navigate('dashboard')" class="btn btn-pink btn-lg">📊 Dashboard</a>`;
+        if(depBtn) depBtn.innerHTML = `<a href="#" onclick="navigate('deposit')" class="btn btn-pink">💳 Deposit</a>`;
+    } else {
+        nav.innerHTML = `
+            <a href="#" onclick="navigate('login')" class="btn btn-outline-light btn-sm me-2">🔐 Login</a>
+            <a href="#" onclick="navigate('register')" class="btn btn-pink btn-sm">📝 Daftar</a>
+        `;
+        if(homeBtn) homeBtn.innerHTML = `
+            <a href="#" onclick="navigate('register')" class="btn btn-pink btn-lg">🚀 DAFTAR</a>
+            <a href="#" onclick="navigate('login')" class="btn btn-outline-light btn-lg ms-2">🔑 LOGIN</a>
+        `;
+        if(depBtn) depBtn.innerHTML = `<a href="#" onclick="navigate('login')" class="btn btn-pink">💳 Deposit</a>`;
+    }
+    
+    // Special page handling
+    if(page === 'dashboard') renderDashboard();
+    if(page === 'home') renderGames();
+    if(page === 'play' && param) {
+        document.getElementById('playGameName').innerText = '🎰 ' + param;
+        document.getElementById('spinGameName').value = param;
+        if(currentUser) {
+            document.getElementById('playSaldo').innerText = 'Saldo: Rp ' + formatNumber(currentUser.saldo);
+        }
+    }
+}
+
+// --- FORMAT NUMBER ---
+function formatNumber(num) {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+// --- TOAST NOTIFICATION ---
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = `alert alert-${type} alert-dismissible fade show`;
+    toast.role = 'alert';
+    toast.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.remove();
+    }, 5000);
+}
+
+// --- RENDER GAMES ---
+function renderGames() {
+    const container = document.getElementById('gameList');
+    container.innerHTML = '';
+    games.forEach(game => {
+        if(!game.is_active) return;
+        const col = document.createElement('div');
+        col.className = 'col-6 col-md-3';
+        col.innerHTML = `
+            <div class="game-card text-center" onclick="${currentUser ? `navigate('play', '${game.name}')` : `showToast('Login dulu, bro!', 'warning')`}">
+                <img src="${game.thumbnail}" alt="${game.name}">
+                <h6 class="mt-2 text-pink">${game.name}</h6>
+                <small class="text-muted">${game.provider}</small>
+                <br>
+                <a href="#" onclick="event.stopPropagation(); ${currentUser ? `navigate('play', '${game.name}')` : `showToast('Login dulu, bro!', 'warning')`}" class="btn btn-pink btn-sm mt-2 w-100">🎰 MAIN</a>
+            </div>
+        `;
+        container.appendChild(col);
+    });
+}
+
+// --- AUTH ---
+function handleLogin(e) {
+    e.preventDefault();
+    const username = document.getElementById('loginUsername').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const users = DB.getUsers();
+    const user = users.find(u => u.username === username && u.password === password);
+    
+    if(user) {
+        currentUser = { id: user.id, username: user.username, saldo: user.saldo, role: user.role };
+        DB.setCurrentUser(currentUser);
+        showToast('✅ Login berhasil! Selamat datang, ' + username, 'success');
+        navigate('dashboard');
+    } else {
+        const err = document.getElementById('loginError');
+        err.style.display = 'block';
+        err.innerText = '❌ Username/Password salah, bro!';
+        setTimeout(() => err.style.display = 'none', 3000);
+    }
+}
+
+function handleRegister(e) {
+    e.preventDefault();
+    const username = document.getElementById('regUsername').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const password = document.getElementById('regPassword').value;
+    const users = DB.getUsers();
+    
+    if(users.find(u => u.username === username)) {
+        const err = document.getElementById('registerError');
+        err.style.display = 'block';
+        err.innerText = '❌ Username sudah dipake, bro!';
+        setTimeout(() => err.style.display = 'none', 3000);
+        return;
+    }
+    
+    const newUser = {
+        id: Date.now(),
+        username,
+        password,
+        email,
+        saldo: 100000,
+        role: 'user'
+    };
+    users.push(newUser);
+    DB.setUsers(users);
+    
+    const success = document.getElementById('registerSuccess');
+    success.style.display = 'block';
+    success.innerText = '✅ Berhasil daftar! Silakan login.';
+    setTimeout(() => {
+        success.style.display = 'none';
+        navigate('login');
+    }, 2000);
+}
+
+function handleLogout() {
+    DB.clearSession();
+    currentUser = null;
+    showToast('🚪 Logout berhasil!', 'info');
+    navigate('home');
+}
+
+// --- DASHBOARD ---
+function renderDashboard() {
+    if(!currentUser) {
+        navigate('home');
+        return;
+    }
+    const user = DB.getUsers().find(u => u.id === currentUser.id);
+    if(user) {
+        currentUser.saldo = user.saldo;
+        DB.setCurrentUser(currentUser);
+        document.getElementById('dashSaldo').innerText = 'Rp ' + formatNumber(user.saldo);
+    }
+    
+    const trx = DB.getTransactions().filter(t => t.user_id === currentUser.id);
+    const container = document.getElementById('historyList');
+    if(trx.length === 0) {
+        container.innerHTML = '<p class="text-muted">Belum ada riwayat, bro. Gas spin!</p>';
+    } else {
+        container.innerHTML = '';
+        trx.slice(0, 5).forEach(t => {
+            const div = document.createElement('div');
+            div.className = 'd-flex justify-content-between border-bottom border-secondary py-2';
+            div.innerHTML = `
+                <span>🎰 ${t.game}</span>
+                <span>Bet: Rp ${formatNumber(t.bet)} | Win: Rp ${formatNumber(t.win)}</span>
+                <small class="text-muted">${new Date(t.created_at).toLocaleString()}</small>
+            `;
+            container.appendChild(div);
+        });
+    }
+}
+
+// --- DEPOSIT ---
+function handleDeposit(e) {
+    e.preventDefault();
+    if(!currentUser) {
+        showToast('Login dulu, bro!', 'warning');
+        return;
+    }
+    const amount = parseInt(document.getElementById('depositAmount').value);
+    const method = document.getElementById('depositMethod').value;
+    if(amount < 10000) {
+        showToast('Minimal deposit Rp 10.000', 'danger');
+        return;
+    }
+    
+    let users = DB.getUsers();
+    const userIdx = users.findIndex(u => u.id === currentUser.id);
+    if(userIdx === -1) {
+        showToast('User tidak ditemukan!', 'danger');
+        return;
+    }
+    users[userIdx].saldo += amount;
+    DB.setUsers(users);
+    currentUser.saldo = users[userIdx].saldo;
+    DB.setCurrentUser(currentUser);
+    
+    const msg = document.getElementById('depositMsg');
+    msg.style.display = 'block';
+    msg.innerText = '✅ Deposit Rp ' + formatNumber(amount) + ' via ' + method + ' berhasil!';
+    setTimeout(() => {
+        msg.style.display = 'none';
+        document.getElementById('depositAmount').value = '';
+        navigate('dashboard');
+    }, 2000);
+}
+
+// --- SPIN ---
+function handleSpin(e) {
+    e.preventDefault();
+    if(!currentUser) {
+        showToast('Login dulu, bro!', 'warning');
+        return;
+    }
+    const bet = parseInt(document.getElementById('spinBet').value);
+    const game = document.getElementById('spinGameName').value;
+    if(bet < 1000) {
+        showToast('Minimal taruhan Rp 1.000', 'danger');
+        return;
+    }
+    
+    let users = DB.getUsers();
+    const userIdx = users.findIndex(u => u.id === currentUser.id);
+    if(userIdx === -1) {
+        showToast('User tidak ditemukan!', 'danger');
+        return;
+    }
+    if(users[userIdx].saldo < bet) {
+        document.getElementById('spinError').style.display = 'block';
+        document.getElementById('spinError').innerText = '❌ Saldo kurang, bro! Deposit dulu.';
+        setTimeout(() => document.getElementById('spinError').style.display = 'none', 3000);
+        return;
+    }
+    
+    const win = Math.floor(Math.random() * (bet * 8));
+    users[userIdx].saldo = users[userIdx].saldo - bet + win;
+    DB.setUsers(users);
+    currentUser.saldo = users[userIdx].saldo;
+    DB.setCurrentUser(currentUser);
+    
+    // Save transaction
+    let trx = DB.getTransactions();
+    trx.push({
+        id: Date.now(),
+        user_id: currentUser.id,
+        game: game,
+        bet: bet,
+        win: win,
+        created_at: Date.now()
+    });
+    DB.setTransactions(trx);
+    
+    let result = '🎰 Spin Rp ' + formatNumber(bet) + ' → Menang Rp ' + formatNumber(win) + '!';
+    if(win > bet) result += ' 🔥 GACOR!';
+    const resEl = document.getElementById('spinResult');
+    resEl.style.display = 'block';
+    resEl.innerText = result;
+    setTimeout(() => resEl.style.display = 'none', 5000);
+    
+    document.getElementById('playSaldo').innerText = 'Saldo: Rp ' + formatNumber(currentUser.saldo);
+    document.getElementById('spinBet').value = '';
+}
+
+// --- INIT ---
+document.addEventListener('DOMContentLoaded', function() {
+    renderGames();
+    if(currentUser) {
+        navigate('dashboard');
+    } else {
+        navigate('home');
+    }
+});
+</script>
+
+</body>
+</html>
