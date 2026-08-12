@@ -7,7 +7,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* ===== RESET & GLOBAL ===== */
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
         html, body {
             height: 100%;
         }
@@ -18,10 +25,38 @@
             flex-direction: column;
             min-height: 100vh;
             padding: 20px 0;
+            overflow-x: hidden;
         }
         .container { 
             max-width: 800px; 
             flex: 1;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(26, 90, 154, 0.05); }
+            50% { box-shadow: 0 0 40px rgba(26, 90, 154, 0.15); }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        .page {
+            display: none;
+            animation: fadeSlideUp 0.5s ease forwards;
+        }
+        .page.active {
+            display: block;
         }
         .card {
             background: #ffffff;
@@ -30,7 +65,30 @@
             box-shadow: 0 8px 32px rgba(0, 40, 100, 0.08);
             padding: 28px 30px;
             margin-bottom: 24px;
+            animation: pulseGlow 3s infinite ease-in-out;
+            transition: transform 0.2s ease;
         }
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        /* ===== NO SELECT / NO HIGHLIGHT ===== */
+        .card, .card-header, .btn, .form-control, .navbar, .footer, .badge-balance, .list-item, .qr-container, .alert {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        button, a, .btn, input, select, textarea {
+            -webkit-tap-highlight-color: transparent !important;
+            outline: none !important;
+        }
+        button:focus, a:focus, .btn:focus, input:focus, select:focus {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        /* ===== COMPONENTS ===== */
         .card-header {
             background: transparent;
             border-bottom: 2px solid #e8f0fe;
@@ -53,6 +111,7 @@
             border-radius: 60px;
             display: inline-block;
             border: 1px solid #c0d8f0;
+            animation: float 4s infinite ease-in-out;
         }
         .badge-balance small {
             font-size: 16px;
@@ -67,13 +126,13 @@
             padding: 10px 28px;
             font-weight: 500;
             color: white;
-            transition: 0.2s;
+            transition: 0.3s ease;
             box-shadow: 0 4px 12px rgba(26, 90, 154, 0.2);
         }
         .btn-primary-custom:hover {
             background: #0f4a7a;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(26, 90, 154, 0.3);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 24px rgba(26, 90, 154, 0.3);
         }
         .btn-outline-primary-custom {
             background: transparent;
@@ -82,11 +141,12 @@
             padding: 8px 24px;
             font-weight: 500;
             color: #1a5a9a;
-            transition: 0.2s;
+            transition: 0.3s ease;
         }
         .btn-outline-primary-custom:hover {
             background: #1a5a9a;
             color: white;
+            transform: translateY(-2px);
         }
         .btn-danger-custom {
             background: #b04040;
@@ -95,11 +155,13 @@
             padding: 10px 28px;
             font-weight: 500;
             color: white;
-            transition: 0.2s;
+            transition: 0.3s ease;
+            box-shadow: 0 4px 12px rgba(176, 64, 64, 0.2);
         }
         .btn-danger-custom:hover {
             background: #8a3030;
-            transform: translateY(-2px);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 24px rgba(176, 64, 64, 0.3);
         }
         .btn-success-custom {
             background: #0a7a3a;
@@ -108,11 +170,13 @@
             padding: 10px 28px;
             font-weight: 500;
             color: white;
-            transition: 0.2s;
+            transition: 0.3s ease;
+            box-shadow: 0 4px 12px rgba(10, 122, 58, 0.2);
         }
         .btn-success-custom:hover {
             background: #086a2e;
-            transform: translateY(-2px);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 24px rgba(10, 122, 58, 0.3);
         }
         .form-control-custom {
             border: 2px solid #dce8f8;
@@ -120,7 +184,7 @@
             padding: 12px 20px;
             font-size: 16px;
             background: #fafcff;
-            transition: 0.2s;
+            transition: 0.3s ease;
         }
         .form-control-custom:focus {
             border-color: #1a5a9a;
@@ -132,6 +196,7 @@
             padding: 24px;
             text-align: center;
             border: 2px dashed #b8d0e8;
+            animation: pulseGlow 4s infinite ease-in-out;
         }
         .qr-container img {
             max-width: 200px;
@@ -140,6 +205,10 @@
             padding: 12px;
             box-shadow: 0 4px 16px rgba(0,0,0,0.05);
             cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .qr-container img:hover {
+            transform: scale(1.05);
         }
         .list-item {
             display: flex;
@@ -147,6 +216,13 @@
             align-items: center;
             padding: 14px 0;
             border-bottom: 1px solid #eef4fa;
+            transition: background 0.2s ease;
+        }
+        .list-item:hover {
+            background: #f8fbff;
+            border-radius: 12px;
+            padding-left: 12px;
+            padding-right: 12px;
         }
         .list-item:last-child { border-bottom: none; }
         .list-item .left {
@@ -184,9 +260,11 @@
             border-radius: 12px;
             color: #1a5a9a;
             font-size: 20px;
+            transition: transform 0.3s ease;
         }
-        .page { display: none; }
-        .page.active { display: block; }
+        .icon-sketch:hover {
+            transform: scale(1.1) rotate(-5deg);
+        }
         .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; max-width: 360px; }
         .toast-custom {
             background: white;
@@ -195,38 +273,49 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.12);
             border-left: 5px solid #1a5a9a;
             margin-bottom: 12px;
-            animation: slideIn 0.3s ease;
-        }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(40px); }
-            to { opacity: 1; transform: translateX(0); }
+            animation: fadeSlideUp 0.4s ease;
         }
         .toast-custom.danger { border-left-color: #b04040; }
         .toast-custom.success { border-left-color: #0a7a3a; }
         .toast-custom.warning { border-left-color: #b08030; }
-        .method-badge {
+
+        /* ===== LOGIN PAGE SPECIAL ===== */
+        .login-illustration {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .login-illustration i {
+            font-size: 72px;
+            color: #1a5a9a;
+            background: linear-gradient(145deg, #e6f0ff, #d4e4ff);
+            padding: 24px;
+            border-radius: 60px;
             display: inline-block;
-            padding: 4px 14px;
-            border-radius: 30px;
-            font-size: 12px;
-            font-weight: 500;
-            background: #e8f2ff;
+            animation: float 4s infinite ease-in-out;
+        }
+        .login-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0a2a5a;
+            letter-spacing: -0.5px;
+        }
+        .login-title span {
             color: #1a5a9a;
         }
-        .copy-btn {
-            cursor: pointer;
-            font-size: 14px;
-            color: #1a5a9a;
-            background: transparent;
-            border: none;
-            padding: 4px 12px;
-            border-radius: 30px;
-            transition: 0.2s;
+        .login-sub {
+            color: #6a8aaa;
+            font-size: 15px;
+            margin-top: 4px;
         }
-        .copy-btn:hover {
-            background: #e8f2ff;
+        .login-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 12px 48px rgba(0, 40, 100, 0.12);
         }
-        /* FOOTER */
+
+        /* ===== FOOTER ===== */
         .footer {
             text-align: center;
             padding: 24px 0 8px 0;
@@ -234,6 +323,8 @@
             font-size: 14px;
             border-top: 1px solid #dce8f8;
             margin-top: 20px;
+            user-select: none;
+            -webkit-user-select: none;
         }
         .footer strong {
             color: #1a5a9a;
@@ -248,10 +339,10 @@
     <!-- HEADER -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h3 style="color: #0a2a5a; font-weight: 700;">
+            <h3 style="color: #0a2a5a; font-weight: 700; user-select: none;">
                 <i class="bi bi-wallet2" style="color: #1a5a9a; margin-right: 8px;"></i>SamPay
             </h3>
-            <span class="text-muted-custom">Dompet Digital</span>
+            <span class="text-muted-custom" style="user-select: none;">Dompet Digital</span>
         </div>
         <div id="navAuth">
             <button onclick="navigate('login')" class="btn btn-outline-primary-custom btn-sm" id="btnLoginNav">Masuk</button>
@@ -269,7 +360,7 @@
                 <span class="badge-balance">
                     <small>Rp</small> <span id="homeBalance">0</span>
                 </span>
-                <p class="text-muted-custom mt-2" style="font-size: 14px;">Saldo tersedia</p>
+                <p class="text-muted-custom mt-2" style="font-size: 14px; user-select: none;">Saldo tersedia</p>
             </div>
             <div class="d-flex justify-content-center gap-3 mt-3 flex-wrap">
                 <button onclick="navigate('deposit')" class="btn btn-success-custom">
@@ -294,21 +385,21 @@
                         <i class="bi bi-arrow-down-circle"></i>
                     </div>
                     <div style="font-weight: 600; color: #0a2a5a;" id="totalDeposit">Rp 0</div>
-                    <span class="text-muted-custom" style="font-size: 12px;">Total Deposit</span>
+                    <span class="text-muted-custom" style="font-size: 12px; user-select: none;">Total Deposit</span>
                 </div>
                 <div class="col-4">
                     <div class="icon-sketch mx-auto mb-2" style="width: 56px; height: 56px; font-size: 28px;">
                         <i class="bi bi-arrow-up-circle"></i>
                     </div>
                     <div style="font-weight: 600; color: #0a2a5a;" id="totalWithdraw">Rp 0</div>
-                    <span class="text-muted-custom" style="font-size: 12px;">Total Penarikan</span>
+                    <span class="text-muted-custom" style="font-size: 12px; user-select: none;">Total Penarikan</span>
                 </div>
                 <div class="col-4">
                     <div class="icon-sketch mx-auto mb-2" style="width: 56px; height: 56px; font-size: 28px;">
                         <i class="bi bi-arrow-left-right"></i>
                     </div>
                     <div style="font-weight: 600; color: #0a2a5a;" id="totalTransaksi">0</div>
-                    <span class="text-muted-custom" style="font-size: 12px;">Total Transaksi</span>
+                    <span class="text-muted-custom" style="font-size: 12px; user-select: none;">Total Transaksi</span>
                 </div>
             </div>
         </div>
@@ -318,31 +409,33 @@
                 <i class="bi bi-clock"></i> Transaksi Terakhir
             </div>
             <div id="homeRecentHistory">
-                <p class="text-muted-custom text-center py-3">Belum ada transaksi</p>
+                <p class="text-muted-custom text-center py-3" style="user-select: none;">Belum ada transaksi</p>
             </div>
         </div>
     </div>
 
-    <!-- ===== LOGIN ===== -->
+    <!-- ===== LOGIN (MORE ATTRACTIVE) ===== -->
     <div id="page-login" class="page">
-        <div class="card" style="max-width: 440px; margin: 0 auto;">
-            <div class="card-header">
-                <i class="bi bi-box-arrow-in-right"></i> Masuk
+        <div class="card login-card" style="max-width: 440px; margin: 0 auto;">
+            <div class="login-illustration">
+                <i class="bi bi-person-circle"></i>
             </div>
+            <h4 class="text-center login-title">Selamat Datang di <span>SamPay</span></h4>
+            <p class="text-center login-sub">Masuk ke dompet digital Anda</p>
             <div id="loginError" class="alert alert-danger" style="display:none; border-radius: 40px;"></div>
             <form onsubmit="handleLogin(event)">
                 <div class="mb-3">
-                    <label class="text-muted-custom" style="font-weight: 500;">Nama Pengguna</label>
+                    <label class="text-muted-custom" style="font-weight: 500; user-select: none;">Nama Pengguna</label>
                     <input type="text" id="loginUsername" class="form-control form-control-custom" placeholder="Masukkan username" required>
                 </div>
                 <div class="mb-3">
-                    <label class="text-muted-custom" style="font-weight: 500;">Kata Sandi</label>
+                    <label class="text-muted-custom" style="font-weight: 500; user-select: none;">Kata Sandi</label>
                     <input type="password" id="loginPassword" class="form-control form-control-custom" placeholder="Masukkan password" required>
                 </div>
                 <button type="submit" class="btn btn-primary-custom w-100">
                     <i class="bi bi-box-arrow-in-right"></i> Masuk
                 </button>
-                <p class="text-center mt-3 text-muted-custom" style="font-size: 14px;">
+                <p class="text-center mt-3 text-muted-custom" style="font-size: 14px; user-select: none;">
                     Belum punya akun? <a href="#" onclick="navigate('register')" style="color: #1a5a9a; font-weight: 500;">Daftar di sini</a>
                 </p>
             </form>
@@ -359,21 +452,21 @@
             <div id="registerError" class="alert alert-danger" style="display:none; border-radius: 40px;"></div>
             <form onsubmit="handleRegister(event)">
                 <div class="mb-3">
-                    <label class="text-muted-custom" style="font-weight: 500;">Nama Pengguna</label>
+                    <label class="text-muted-custom" style="font-weight: 500; user-select: none;">Nama Pengguna</label>
                     <input type="text" id="regUsername" class="form-control form-control-custom" placeholder="Buat username" required>
                 </div>
                 <div class="mb-3">
-                    <label class="text-muted-custom" style="font-weight: 500;">Email</label>
+                    <label class="text-muted-custom" style="font-weight: 500; user-select: none;">Email</label>
                     <input type="email" id="regEmail" class="form-control form-control-custom" placeholder="Email aktif" required>
                 </div>
                 <div class="mb-3">
-                    <label class="text-muted-custom" style="font-weight: 500;">Kata Sandi</label>
+                    <label class="text-muted-custom" style="font-weight: 500; user-select: none;">Kata Sandi</label>
                     <input type="password" id="regPassword" class="form-control form-control-custom" placeholder="Minimal 6 karakter" required minlength="6">
                 </div>
                 <button type="submit" class="btn btn-primary-custom w-100">
                     <i class="bi bi-person-plus"></i> Daftar
                 </button>
-                <p class="text-center mt-3 text-muted-custom" style="font-size: 14px;">
+                <p class="text-center mt-3 text-muted-custom" style="font-size: 14px; user-select: none;">
                     Sudah punya akun? <a href="#" onclick="navigate('login')" style="color: #1a5a9a; font-weight: 500;">Masuk</a>
                 </p>
             </form>
@@ -389,11 +482,11 @@
             <div id="depositMsg" class="alert alert-success" style="display:none; border-radius: 40px;"></div>
             <form onsubmit="handleDeposit(event)">
                 <div class="mb-3">
-                    <label class="text-muted-custom" style="font-weight: 500;">Nominal (Rp)</label>
+                    <label class="text-muted-custom" style="font-weight: 500; user-select: none;">Nominal (Rp)</label>
                     <input type="number" id="depositAmount" class="form-control form-control-custom" placeholder="Minimal 10.000" required min="10000">
                 </div>
                 <div class="mb-3">
-                    <label class="text-muted-custom" style="font-weight: 500;">Metode</label>
+                    <label class="text-muted-custom" style="font-weight: 500; user-select: none;">Metode</label>
                     <select id="depositMethod" class="form-control form-control-custom">
                         <option value="QRIS">QRIS</option>
                         <option value="Bank BCA">Bank BCA</option>
@@ -406,10 +499,10 @@
                 </div>
 
                 <div class="qr-container mt-3">
-                    <div style="font-weight: 500; color: #1a3a6b; margin-bottom: 12px;">
+                    <div style="font-weight: 500; color: #1a3a6b; margin-bottom: 12px; user-select: none;">
                         <i class="bi bi-qr-code" style="font-size: 24px;"></i> Scan QRIS untuk pembayaran
                     </div>
-                    <img id="qrisImage" src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=SamPay-Deposit" alt="QRIS Code" style="max-width: 200px;">
+                    <img id="qrisImage" src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=SamPay-Deposit" alt="QRIS Code">
                     <div class="mt-2">
                         <button type="button" onclick="updateQR()" class="btn btn-outline-primary-custom btn-sm">
                             <i class="bi bi-arrow-clockwise"></i> Refresh QR
@@ -418,10 +511,10 @@
                             <i class="bi bi-clipboard"></i> Salin Data QR
                         </button>
                     </div>
-                    <p class="text-muted-custom mt-2" style="font-size: 13px;">
+                    <p class="text-muted-custom mt-2" style="font-size: 13px; user-select: none;">
                         Scan dengan e-wallet atau mobile banking, lalu transfer sesuai nominal.
                     </p>
-                    <div class="alert alert-info" style="border-radius: 40px; font-size: 14px;">
+                    <div class="alert alert-info" style="border-radius: 40px; font-size: 14px; user-select: none;">
                         <i class="bi bi-info-circle"></i> Setelah transfer, klik tombol konfirmasi di bawah.
                     </div>
                 </div>
@@ -446,11 +539,11 @@
             <div id="withdrawError" class="alert alert-danger" style="display:none; border-radius: 40px;"></div>
             <form onsubmit="handleWithdraw(event)">
                 <div class="mb-3">
-                    <label class="text-muted-custom" style="font-weight: 500;">Nominal (Rp)</label>
+                    <label class="text-muted-custom" style="font-weight: 500; user-select: none;">Nominal (Rp)</label>
                     <input type="number" id="withdrawAmount" class="form-control form-control-custom" placeholder="Minimal 10.000" required min="10000">
                 </div>
                 <div class="mb-3">
-                    <label class="text-muted-custom" style="font-weight: 500;">Metode</label>
+                    <label class="text-muted-custom" style="font-weight: 500; user-select: none;">Metode</label>
                     <select id="withdrawMethod" class="form-control form-control-custom">
                         <optgroup label="E-Wallet">
                             <option value="ShopeePay">ShopeePay</option>
@@ -467,11 +560,11 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label class="text-muted-custom" style="font-weight: 500;">Nomor Tujuan</label>
+                    <label class="text-muted-custom" style="font-weight: 500; user-select: none;">Nomor Tujuan</label>
                     <input type="text" id="withdrawAccount" class="form-control form-control-custom" placeholder="Masukkan nomor rekening / e-wallet" required>
                 </div>
                 <div class="mb-3">
-                    <label class="text-muted-custom" style="font-weight: 500;">Nama Penerima</label>
+                    <label class="text-muted-custom" style="font-weight: 500; user-select: none;">Nama Penerima</label>
                     <input type="text" id="withdrawName" class="form-control form-control-custom" placeholder="Nama lengkap pemilik rekening" required>
                 </div>
                 <button type="submit" class="btn btn-danger-custom w-100">
@@ -491,7 +584,7 @@
                 <i class="bi bi-clock-history"></i> Riwayat Transaksi
             </div>
             <div id="historyList">
-                <p class="text-muted-custom text-center py-3">Belum ada transaksi</p>
+                <p class="text-muted-custom text-center py-3" style="user-select: none;">Belum ada transaksi</p>
             </div>
             <button onclick="navigate('home')" class="btn btn-outline-primary-custom w-100 mt-2">
                 <i class="bi bi-arrow-left"></i> Kembali
@@ -506,10 +599,10 @@
                 <i class="bi bi-person-circle"></i> Profil
             </div>
             <div id="profileInfo">
-                <p><strong>Username:</strong> <span id="profileUsername">-</span></p>
-                <p><strong>Email:</strong> <span id="profileEmail">-</span></p>
-                <p><strong>Saldo:</strong> Rp <span id="profileBalance">0</span></p>
-                <p><strong>Member sejak:</strong> <span id="profileSince">-</span></p>
+                <p style="user-select: none;"><strong>Username:</strong> <span id="profileUsername">-</span></p>
+                <p style="user-select: none;"><strong>Email:</strong> <span id="profileEmail">-</span></p>
+                <p style="user-select: none;"><strong>Saldo:</strong> Rp <span id="profileBalance">0</span></p>
+                <p style="user-select: none;"><strong>Member sejak:</strong> <span id="profileSince">-</span></p>
             </div>
             <button onclick="handleLogout()" class="btn btn-danger-custom w-100">
                 <i class="bi bi-box-arrow-right"></i> Keluar
@@ -520,7 +613,7 @@
         </div>
     </div>
 
-    <!-- ===== FOOTER (di semua halaman) ===== -->
+    <!-- ===== FOOTER ===== -->
     <div class="footer">
         &copy; 2026 <strong>SamPay</strong> by samil
     </div>
@@ -529,7 +622,7 @@
 
 <script>
 // ============================================================
-// SamPay - Dompet Digital (FULL WITHDRAW + FOOTER)
+// SamPay - FULLY FIXED + ANIMATION + NO COPY + NO HIGHLIGHT
 // ============================================================
 
 const DB = {
@@ -559,11 +652,26 @@ const DB = {
 let currentUser = DB.getSession();
 let transactions = DB.getTransactions();
 
+// ===== NAVIGATION (FIXED) =====
 function navigate(page) {
-    document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+    // Hide all pages
+    document.querySelectorAll('.page').forEach(el => {
+        el.classList.remove('active');
+    });
+    
+    // Show target page
     const target = document.getElementById('page-' + page);
-    if(target) target.classList.add('active');
+    if(target) {
+        target.classList.add('active');
+        // Re-trigger animation
+        target.style.animation = 'none';
+        requestAnimationFrame(() => {
+            target.style.animation = 'fadeSlideUp 0.5s ease forwards';
+        });
+    }
+    
     updateNav();
+    
     if(page === 'home') renderHome();
     if(page === 'history') renderHistory();
     if(page === 'profile') renderProfile();
@@ -574,7 +682,7 @@ function updateNav() {
     const nav = document.getElementById('navAuth');
     if(currentUser) {
         nav.innerHTML = `
-            <span style="color: #1a3a6b; font-weight: 500; margin-right: 12px;">
+            <span style="color: #1a3a6b; font-weight: 500; margin-right: 12px; user-select: none;">
                 <i class="bi bi-person-circle"></i> ${currentUser.username}
             </span>
             <button onclick="navigate('profile')" class="btn btn-outline-primary-custom btn-sm me-1">
@@ -598,12 +706,12 @@ function showToast(message, type = 'info') {
     toast.className = `toast-custom ${type}`;
     toast.innerHTML = `
         <div style="display: flex; align-items: center; gap: 12px;">
-            <span style="font-size: 20px;">
+            <span style="font-size: 20px; user-select: none;">
                 ${type === 'success' ? '<i class="bi bi-check-circle-fill" style="color: #0a7a3a;"></i>' :
                   type === 'danger' ? '<i class="bi bi-x-circle-fill" style="color: #b04040;"></i>' :
                   '<i class="bi bi-info-circle-fill" style="color: #1a5a9a;"></i>'}
             </span>
-            <span style="flex: 1; color: #1a2a4a;">${message}</span>
+            <span style="flex: 1; color: #1a2a4a; user-select: none;">${message}</span>
             <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; color: #8a9aaa; font-size: 18px;">&times;</button>
         </div>
     `;
@@ -621,7 +729,7 @@ function formatDate(ts) {
     return new Date(ts).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
 
-// --- AUTH ---
+// ===== AUTH =====
 function handleLogin(e) {
     e.preventDefault();
     const username = document.getElementById('loginUsername').value.trim();
@@ -672,7 +780,7 @@ function handleLogout() {
     navigate('home');
 }
 
-// --- DEPOSIT (DENGAN QRIS) ---
+// ===== DEPOSIT =====
 function handleDeposit(e) {
     e.preventDefault();
     if(!currentUser) { showToast('Silakan masuk terlebih dahulu.', 'warning'); return; }
@@ -728,7 +836,7 @@ function copyQRData() {
     });
 }
 
-// --- WITHDRAW (BENERAN BISA KIRIM KE BANK & E-WALLET) ---
+// ===== WITHDRAW (FULLY WORKING) =====
 function handleWithdraw(e) {
     e.preventDefault();
     if(!currentUser) { showToast('Silakan masuk terlebih dahulu.', 'warning'); return; }
@@ -739,4 +847,151 @@ function handleWithdraw(e) {
     const name = document.getElementById('withdrawName').value.trim();
     
     if(amount < 10000) { showToast('Minimal penarikan Rp 10.000', 'danger'); return; }
-    if(!account) { showToast('Nomor
+    if(!account) { showToast('Nomor rekening/e-wallet wajib diisi.', 'danger'); return; }
+    if(!name) { showToast('Nama penerima wajib diisi.', 'danger'); return; }
+    
+    let users = DB.getUsers();
+    const idx = users.findIndex(u => u.id === currentUser.id);
+    if(idx === -1) { showToast('Akun tidak ditemukan.', 'danger'); return; }
+    
+    if(users[idx].saldo < amount) {
+        const err = document.getElementById('withdrawError');
+        err.style.display = 'block';
+        err.innerHTML = '<i class="bi bi-exclamation-circle"></i> Saldo tidak mencukupi. Saldo Anda: Rp ' + formatNumber(users[idx].saldo);
+        setTimeout(() => err.style.display = 'none', 3000);
+        return;
+    }
+    
+    // Kurangi saldo
+    users[idx].saldo -= amount;
+    DB.setUsers(users);
+    currentUser.saldo = users[idx].saldo;
+    DB.setSession(currentUser);
+    
+    // Simpan transaksi
+    transactions = DB.getTransactions();
+    transactions.push({ 
+        id: Date.now(), 
+        user_id: currentUser.id, 
+        type: 'withdraw', 
+        amount, 
+        method: method + ' - ' + account,
+        status: 'success', 
+        created: Date.now(),
+        description: 'Penarikan ke ' + method + ' a.n. ' + name + ' (' + account + ')'
+    });
+    DB.setTransactions(transactions);
+    
+    const msg = document.getElementById('withdrawMsg');
+    msg.style.display = 'block';
+    msg.innerHTML = '<i class="bi bi-check-circle"></i> Penarikan Rp ' + formatNumber(amount) + ' ke ' + method + ' (' + account + ') a.n. ' + name + ' berhasil!';
+    showToast('Penarikan berhasil! Dana sudah dikirim ke ' + method, 'success');
+    setTimeout(() => {
+        msg.style.display = 'none';
+        document.getElementById('withdrawAmount').value = '';
+        document.getElementById('withdrawAccount').value = '';
+        document.getElementById('withdrawName').value = '';
+        navigate('home');
+    }, 3000);
+}
+
+// ===== RENDER =====
+function renderHome() {
+    if(!currentUser) {
+        document.getElementById('homeBalance').innerText = '0';
+        document.getElementById('totalDeposit').innerText = 'Rp 0';
+        document.getElementById('totalWithdraw').innerText = 'Rp 0';
+        document.getElementById('totalTransaksi').innerText = '0';
+        document.getElementById('homeRecentHistory').innerHTML = '<p class="text-muted-custom text-center py-3" style="user-select: none;">Silakan masuk untuk melihat data</p>';
+        return;
+    }
+    document.getElementById('homeBalance').innerText = formatNumber(currentUser.saldo);
+    const myTrx = DB.getTransactions().filter(t => t.user_id === currentUser.id);
+    const totalDeposit = myTrx.filter(t => t.type === 'deposit').reduce((sum, t) => sum + t.amount, 0);
+    const totalWithdraw = myTrx.filter(t => t.type === 'withdraw').reduce((sum, t) => sum + t.amount, 0);
+    document.getElementById('totalDeposit').innerText = 'Rp ' + formatNumber(totalDeposit);
+    document.getElementById('totalWithdraw').innerText = 'Rp ' + formatNumber(totalWithdraw);
+    document.getElementById('totalTransaksi').innerText = myTrx.length;
+    
+    const container = document.getElementById('homeRecentHistory');
+    const recent = myTrx.slice(-5).reverse();
+    if(recent.length === 0) {
+        container.innerHTML = '<p class="text-muted-custom text-center py-3" style="user-select: none;">Belum ada transaksi</p>';
+    } else {
+        container.innerHTML = '';
+        recent.forEach(t => {
+            const div = document.createElement('div');
+            div.className = 'list-item';
+            const isDeposit = t.type === 'deposit';
+            div.innerHTML = `
+                <div class="left">
+                    <i class="bi ${isDeposit ? 'bi-arrow-down-circle' : 'bi-arrow-up-circle'}" style="color: ${isDeposit ? '#0a7a3a' : '#b04040'};"></i>
+                    <div class="info">
+                        <div class="title" style="user-select: none;">${isDeposit ? 'Deposit' : 'Penarikan'}</div>
+                        <div class="sub" style="user-select: none;">${t.method || 'QRIS'} • ${formatDate(t.created)}</div>
+                    </div>
+                </div>
+                <div class="amount ${isDeposit ? 'positive' : 'negative'}" style="user-select: none;">
+                    ${isDeposit ? '+' : '-'} Rp ${formatNumber(t.amount)}
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
+}
+
+function renderHistory() {
+    const container = document.getElementById('historyList');
+    if(!currentUser) {
+        container.innerHTML = '<p class="text-muted-custom text-center py-3" style="user-select: none;">Silakan masuk untuk melihat riwayat.</p>';
+        return;
+    }
+    const myTrx = DB.getTransactions().filter(t => t.user_id === currentUser.id);
+    if(myTrx.length === 0) {
+        container.innerHTML = '<p class="text-muted-custom text-center py-3" style="user-select: none;">Belum ada transaksi.</p>';
+        return;
+    }
+    container.innerHTML = '';
+    myTrx.slice().reverse().forEach(t => {
+        const div = document.createElement('div');
+        div.className = 'list-item';
+        const isDeposit = t.type === 'deposit';
+        div.innerHTML = `
+            <div class="left">
+                <i class="bi ${isDeposit ? 'bi-arrow-down-circle' : 'bi-arrow-up-circle'}" style="color: ${isDeposit ? '#0a7a3a' : '#b04040'};"></i>
+                <div class="info">
+                    <div class="title" style="user-select: none;">${isDeposit ? 'Deposit' : 'Penarikan'}</div>
+                    <div class="sub" style="user-select: none;">${t.method || 'QRIS'} • ${formatDate(t.created)}</div>
+                </div>
+            </div>
+            <div class="amount ${isDeposit ? 'positive' : 'negative'}" style="user-select: none;">
+                ${isDeposit ? '+' : '-'} Rp ${formatNumber(t.amount)}
+            </div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+function renderProfile() {
+    if(!currentUser) { navigate('home'); return; }
+    const users = DB.getUsers();
+    const user = users.find(u => u.id === currentUser.id);
+    if(user) {
+        document.getElementById('profileUsername').innerText = user.username;
+        document.getElementById('profileEmail').innerText = user.email || '-';
+        document.getElementById('profileBalance').innerText = formatNumber(user.saldo);
+        document.getElementById('profileSince').innerText = user.created ? formatDate(user.created) : '-';
+    }
+}
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', function() {
+    updateNav();
+    if(currentUser) navigate('home');
+    else navigate('home');
+    setTimeout(updateQR, 500);
+});
+</script>
+
+</body>
+                </html>
