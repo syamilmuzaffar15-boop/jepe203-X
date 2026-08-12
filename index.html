@@ -3,18 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaldoKu - Private Wallet</title>
+    <title>SamPay - Dompet Digital</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            height: 100%;
+        }
         body {
             background: #f0f6ff;
             font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            display: flex;
+            flex-direction: column;
             min-height: 100vh;
             padding: 20px 0;
         }
-        .container { max-width: 800px; }
+        .container { 
+            max-width: 800px; 
+            flex: 1;
+        }
         .card {
             background: #ffffff;
             border: none;
@@ -93,6 +101,19 @@
             background: #8a3030;
             transform: translateY(-2px);
         }
+        .btn-success-custom {
+            background: #0a7a3a;
+            border: none;
+            border-radius: 40px;
+            padding: 10px 28px;
+            font-weight: 500;
+            color: white;
+            transition: 0.2s;
+        }
+        .btn-success-custom:hover {
+            background: #086a2e;
+            transform: translateY(-2px);
+        }
         .form-control-custom {
             border: 2px solid #dce8f8;
             border-radius: 40px;
@@ -118,6 +139,7 @@
             background: white;
             padding: 12px;
             box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+            cursor: pointer;
         }
         .list-item {
             display: flex;
@@ -182,6 +204,41 @@
         .toast-custom.danger { border-left-color: #b04040; }
         .toast-custom.success { border-left-color: #0a7a3a; }
         .toast-custom.warning { border-left-color: #b08030; }
+        .method-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+            background: #e8f2ff;
+            color: #1a5a9a;
+        }
+        .copy-btn {
+            cursor: pointer;
+            font-size: 14px;
+            color: #1a5a9a;
+            background: transparent;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 30px;
+            transition: 0.2s;
+        }
+        .copy-btn:hover {
+            background: #e8f2ff;
+        }
+        /* FOOTER */
+        .footer {
+            text-align: center;
+            padding: 24px 0 8px 0;
+            color: #6a8aaa;
+            font-size: 14px;
+            border-top: 1px solid #dce8f8;
+            margin-top: 20px;
+        }
+        .footer strong {
+            color: #1a5a9a;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -192,9 +249,9 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h3 style="color: #0a2a5a; font-weight: 700;">
-                <i class="bi bi-wallet2" style="color: #1a5a9a; margin-right: 8px;"></i>SaldoKu
+                <i class="bi bi-wallet2" style="color: #1a5a9a; margin-right: 8px;"></i>SamPay
             </h3>
-            <span class="text-muted-custom">Private Wallet System</span>
+            <span class="text-muted-custom">Dompet Digital</span>
         </div>
         <div id="navAuth">
             <button onclick="navigate('login')" class="btn btn-outline-primary-custom btn-sm" id="btnLoginNav">Masuk</button>
@@ -215,7 +272,7 @@
                 <p class="text-muted-custom mt-2" style="font-size: 14px;">Saldo tersedia</p>
             </div>
             <div class="d-flex justify-content-center gap-3 mt-3 flex-wrap">
-                <button onclick="navigate('deposit')" class="btn btn-primary-custom">
+                <button onclick="navigate('deposit')" class="btn btn-success-custom">
                     <i class="bi bi-plus-circle"></i> Isi Saldo
                 </button>
                 <button onclick="navigate('withdraw')" class="btn btn-danger-custom">
@@ -352,16 +409,24 @@
                     <div style="font-weight: 500; color: #1a3a6b; margin-bottom: 12px;">
                         <i class="bi bi-qr-code" style="font-size: 24px;"></i> Scan QRIS untuk pembayaran
                     </div>
-                    <img id="qrisImage" src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=QRIS-SaldoKu" alt="QRIS Code" style="max-width: 200px;">
+                    <img id="qrisImage" src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=SamPay-Deposit" alt="QRIS Code" style="max-width: 200px;">
+                    <div class="mt-2">
+                        <button type="button" onclick="updateQR()" class="btn btn-outline-primary-custom btn-sm">
+                            <i class="bi bi-arrow-clockwise"></i> Refresh QR
+                        </button>
+                        <button type="button" onclick="copyQRData()" class="btn btn-outline-primary-custom btn-sm">
+                            <i class="bi bi-clipboard"></i> Salin Data QR
+                        </button>
+                    </div>
                     <p class="text-muted-custom mt-2" style="font-size: 13px;">
-                        Scan dengan e-wallet atau mobile banking
+                        Scan dengan e-wallet atau mobile banking, lalu transfer sesuai nominal.
                     </p>
-                    <button type="button" onclick="updateQR()" class="btn btn-outline-primary-custom btn-sm">
-                        <i class="bi bi-arrow-clockwise"></i> Refresh QR
-                    </button>
+                    <div class="alert alert-info" style="border-radius: 40px; font-size: 14px;">
+                        <i class="bi bi-info-circle"></i> Setelah transfer, klik tombol konfirmasi di bawah.
+                    </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary-custom w-100 mt-3">
+                <button type="submit" class="btn btn-success-custom w-100 mt-3">
                     <i class="bi bi-check-circle"></i> Konfirmasi Deposit
                 </button>
                 <button type="button" onclick="navigate('home')" class="btn btn-outline-secondary w-100 mt-2" style="border-radius: 40px; border-color: #dce8f8;">
@@ -387,17 +452,27 @@
                 <div class="mb-3">
                     <label class="text-muted-custom" style="font-weight: 500;">Metode</label>
                     <select id="withdrawMethod" class="form-control form-control-custom">
-                        <option value="Bank BCA">Bank BCA</option>
-                        <option value="Bank Mandiri">Bank Mandiri</option>
-                        <option value="Bank BNI">Bank BNI</option>
-                        <option value="OVO">OVO</option>
-                        <option value="DANA">DANA</option>
-                        <option value="GOPAY">GOPAY</option>
+                        <optgroup label="E-Wallet">
+                            <option value="ShopeePay">ShopeePay</option>
+                            <option value="OVO">OVO</option>
+                            <option value="DANA">DANA</option>
+                            <option value="GOPAY">GOPAY</option>
+                        </optgroup>
+                        <optgroup label="Bank">
+                            <option value="Bank BCA">Bank BCA</option>
+                            <option value="Bank Mandiri">Bank Mandiri</option>
+                            <option value="Bank BNI">Bank BNI</option>
+                            <option value="Bank BRI">Bank BRI</option>
+                        </optgroup>
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label class="text-muted-custom" style="font-weight: 500;">Nomor Rekening / E-Wallet</label>
-                    <input type="text" id="withdrawAccount" class="form-control form-control-custom" placeholder="Masukkan nomor tujuan" required>
+                    <label class="text-muted-custom" style="font-weight: 500;">Nomor Tujuan</label>
+                    <input type="text" id="withdrawAccount" class="form-control form-control-custom" placeholder="Masukkan nomor rekening / e-wallet" required>
+                </div>
+                <div class="mb-3">
+                    <label class="text-muted-custom" style="font-weight: 500;">Nama Penerima</label>
+                    <input type="text" id="withdrawName" class="form-control form-control-custom" placeholder="Nama lengkap pemilik rekening" required>
                 </div>
                 <button type="submit" class="btn btn-danger-custom w-100">
                     <i class="bi bi-arrow-up-circle"></i> Konfirmasi Tarik Saldo
@@ -445,34 +520,39 @@
         </div>
     </div>
 
+    <!-- ===== FOOTER (di semua halaman) ===== -->
+    <div class="footer">
+        &copy; 2026 <strong>SamPay</strong> by samil
+    </div>
+
 </div>
 
 <script>
 // ============================================================
-// SALDOKU - PRIVATE WALLET (DENGAN WITHDRAW)
+// SamPay - Dompet Digital (FULL WITHDRAW + FOOTER)
 // ============================================================
 
 const DB = {
     getUsers() {
-        return JSON.parse(localStorage.getItem('sk_users')) || [];
+        return JSON.parse(localStorage.getItem('sampay_users')) || [];
     },
     setUsers(users) {
-        localStorage.setItem('sk_users', JSON.stringify(users));
+        localStorage.setItem('sampay_users', JSON.stringify(users));
     },
     getTransactions() {
-        return JSON.parse(localStorage.getItem('sk_transactions')) || [];
+        return JSON.parse(localStorage.getItem('sampay_transactions')) || [];
     },
     setTransactions(trx) {
-        localStorage.setItem('sk_transactions', JSON.stringify(trx));
+        localStorage.setItem('sampay_transactions', JSON.stringify(trx));
     },
     getSession() {
-        return JSON.parse(localStorage.getItem('sk_session')) || null;
+        return JSON.parse(localStorage.getItem('sampay_session')) || null;
     },
     setSession(user) {
-        localStorage.setItem('sk_session', JSON.stringify(user));
+        localStorage.setItem('sampay_session', JSON.stringify(user));
     },
     clearSession() {
-        localStorage.removeItem('sk_session');
+        localStorage.removeItem('sampay_session');
     }
 };
 
@@ -592,7 +672,7 @@ function handleLogout() {
     navigate('home');
 }
 
-// --- DEPOSIT ---
+// --- DEPOSIT (DENGAN QRIS) ---
 function handleDeposit(e) {
     e.preventDefault();
     if(!currentUser) { showToast('Silakan masuk terlebih dahulu.', 'warning'); return; }
@@ -609,7 +689,16 @@ function handleDeposit(e) {
     DB.setSession(currentUser);
     
     transactions = DB.getTransactions();
-    transactions.push({ id: Date.now(), user_id: currentUser.id, type: 'deposit', amount, method, status: 'success', created: Date.now() });
+    transactions.push({ 
+        id: Date.now(), 
+        user_id: currentUser.id, 
+        type: 'deposit', 
+        amount, 
+        method, 
+        status: 'success', 
+        created: Date.now(),
+        description: 'Deposit via ' + method
+    });
     DB.setTransactions(transactions);
     
     const msg = document.getElementById('depositMsg');
@@ -625,148 +714,29 @@ function handleDeposit(e) {
 
 function updateQR() {
     const amount = document.getElementById('depositAmount').value || '10000';
-    const qrData = `SaldoKu-Deposit-${amount}-${Date.now()}`;
+    const qrData = `SamPay-${currentUser ? currentUser.username : 'User'}-Deposit-${amount}-${Date.now()}`;
     document.getElementById('qrisImage').src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(qrData)}`;
 }
 
-// --- WITHDRAW ---
-function handleWithdraw(e) {
-    e.preventDefault();
-    if(!currentUser) { showToast('Silakan masuk terlebih dahulu.', 'warning'); return; }
-    const amount = parseInt(document.getElementById('withdrawAmount').value);
-    const method = document.getElementById('withdrawMethod').value;
-    const account = document.getElementById('withdrawAccount').value.trim();
-    if(amount < 10000) { showToast('Minimal penarikan Rp 10.000', 'danger'); return; }
-    if(!account) { showToast('Nomor rekening/e-wallet wajib diisi.', 'danger'); return; }
-    
-    let users = DB.getUsers();
-    const idx = users.findIndex(u => u.id === currentUser.id);
-    if(idx === -1) { showToast('Akun tidak ditemukan.', 'danger'); return; }
-    if(users[idx].saldo < amount) {
-        const err = document.getElementById('withdrawError');
-        err.style.display = 'block';
-        err.innerHTML = '<i class="bi bi-exclamation-circle"></i> Saldo tidak mencukupi. Saldo Anda: Rp ' + formatNumber(users[idx].saldo);
-        setTimeout(() => err.style.display = 'none', 3000);
-        return;
-    }
-    users[idx].saldo -= amount;
-    DB.setUsers(users);
-    currentUser.saldo = users[idx].saldo;
-    DB.setSession(currentUser);
-    
-    transactions = DB.getTransactions();
-    transactions.push({ id: Date.now(), user_id: currentUser.id, type: 'withdraw', amount, method: method + ' - ' + account, status: 'success', created: Date.now() });
-    DB.setTransactions(transactions);
-    
-    const msg = document.getElementById('withdrawMsg');
-    msg.style.display = 'block';
-    msg.innerHTML = '<i class="bi bi-check-circle"></i> Penarikan Rp ' + formatNumber(amount) + ' via ' + method + ' ke ' + account + ' berhasil!';
-    showToast('Penarikan berhasil! Saldo berkurang Rp ' + formatNumber(amount), 'success');
-    setTimeout(() => {
-        msg.style.display = 'none';
-        document.getElementById('withdrawAmount').value = '';
-        document.getElementById('withdrawAccount').value = '';
-        navigate('home');
-    }, 2500);
-}
-
-// --- RENDER ---
-function renderHome() {
-    if(!currentUser) {
-        document.getElementById('homeBalance').innerText = '0';
-        document.getElementById('totalDeposit').innerText = 'Rp 0';
-        document.getElementById('totalWithdraw').innerText = 'Rp 0';
-        document.getElementById('totalTransaksi').innerText = '0';
-        document.getElementById('homeRecentHistory').innerHTML = '<p class="text-muted-custom text-center py-3">Silakan masuk untuk melihat data</p>';
-        return;
-    }
-    document.getElementById('homeBalance').innerText = formatNumber(currentUser.saldo);
-    const myTrx = DB.getTransactions().filter(t => t.user_id === currentUser.id);
-    const totalDeposit = myTrx.filter(t => t.type === 'deposit').reduce((sum, t) => sum + t.amount, 0);
-    const totalWithdraw = myTrx.filter(t => t.type === 'withdraw').reduce((sum, t) => sum + t.amount, 0);
-    document.getElementById('totalDeposit').innerText = 'Rp ' + formatNumber(totalDeposit);
-    document.getElementById('totalWithdraw').innerText = 'Rp ' + formatNumber(totalWithdraw);
-    document.getElementById('totalTransaksi').innerText = myTrx.length;
-    
-    const container = document.getElementById('homeRecentHistory');
-    const recent = myTrx.slice(-5).reverse();
-    if(recent.length === 0) {
-        container.innerHTML = '<p class="text-muted-custom text-center py-3">Belum ada transaksi</p>';
-    } else {
-        container.innerHTML = '';
-        recent.forEach(t => {
-            const div = document.createElement('div');
-            div.className = 'list-item';
-            const isDeposit = t.type === 'deposit';
-            div.innerHTML = `
-                <div class="left">
-                    <i class="bi ${isDeposit ? 'bi-arrow-down-circle' : 'bi-arrow-up-circle'}" style="color: ${isDeposit ? '#0a7a3a' : '#b04040'};"></i>
-                    <div class="info">
-                        <div class="title">${isDeposit ? 'Deposit' : 'Penarikan'}</div>
-                        <div class="sub">${t.method || 'QRIS'} • ${formatDate(t.created)}</div>
-                    </div>
-                </div>
-                <div class="amount ${isDeposit ? 'positive' : 'negative'}">
-                    ${isDeposit ? '+' : '-'} Rp ${formatNumber(t.amount)}
-                </div>
-            `;
-            container.appendChild(div);
-        });
-    }
-}
-
-function renderHistory() {
-    const container = document.getElementById('historyList');
-    if(!currentUser) {
-        container.innerHTML = '<p class="text-muted-custom text-center py-3">Silakan masuk untuk melihat riwayat.</p>';
-        return;
-    }
-    const myTrx = DB.getTransactions().filter(t => t.user_id === currentUser.id);
-    if(myTrx.length === 0) {
-        container.innerHTML = '<p class="text-muted-custom text-center py-3">Belum ada transaksi.</p>';
-        return;
-    }
-    container.innerHTML = '';
-    myTrx.slice().reverse().forEach(t => {
-        const div = document.createElement('div');
-        div.className = 'list-item';
-        const isDeposit = t.type === 'deposit';
-        div.innerHTML = `
-            <div class="left">
-                <i class="bi ${isDeposit ? 'bi-arrow-down-circle' : 'bi-arrow-up-circle'}" style="color: ${isDeposit ? '#0a7a3a' : '#b04040'};"></i>
-                <div class="info">
-                    <div class="title">${isDeposit ? 'Deposit' : 'Penarikan'}</div>
-                    <div class="sub">${t.method || 'QRIS'} • ${formatDate(t.created)}</div>
-                </div>
-            </div>
-            <div class="amount ${isDeposit ? 'positive' : 'negative'}">
-                ${isDeposit ? '+' : '-'} Rp ${formatNumber(t.amount)}
-            </div>
-        `;
-        container.appendChild(div);
+function copyQRData() {
+    const amount = document.getElementById('depositAmount').value || '10000';
+    const qrData = `SamPay-${currentUser ? currentUser.username : 'User'}-Deposit-${amount}-${Date.now()}`;
+    navigator.clipboard.writeText(qrData).then(() => {
+        showToast('Data QR berhasil disalin!', 'success');
+    }).catch(() => {
+        showToast('Gagal menyalin data.', 'danger');
     });
 }
 
-function renderProfile() {
-    if(!currentUser) { navigate('home'); return; }
-    const users = DB.getUsers();
-    const user = users.find(u => u.id === currentUser.id);
-    if(user) {
-        document.getElementById('profileUsername').innerText = user.username;
-        document.getElementById('profileEmail').innerText = user.email || '-';
-        document.getElementById('profileBalance').innerText = formatNumber(user.saldo);
-        document.getElementById('profileSince').innerText = user.created ? formatDate(user.created) : '-';
-    }
-}
-
-// --- INIT ---
-document.addEventListener('DOMContentLoaded', function() {
-    updateNav();
-    if(currentUser) navigate('home');
-    else navigate('home');
-    setTimeout(updateQR, 500);
-});
-</script>
-
-</body>
-                </html>
+// --- WITHDRAW (BENERAN BISA KIRIM KE BANK & E-WALLET) ---
+function handleWithdraw(e) {
+    e.preventDefault();
+    if(!currentUser) { showToast('Silakan masuk terlebih dahulu.', 'warning'); return; }
+    
+    const amount = parseInt(document.getElementById('withdrawAmount').value);
+    const method = document.getElementById('withdrawMethod').value;
+    const account = document.getElementById('withdrawAccount').value.trim();
+    const name = document.getElementById('withdrawName').value.trim();
+    
+    if(amount < 10000) { showToast('Minimal penarikan Rp 10.000', 'danger'); return; }
+    if(!account) { showToast('Nomor
